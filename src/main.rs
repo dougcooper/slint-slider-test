@@ -119,7 +119,7 @@ fn main() {
         let now = Instant::now();
 
         if let Some(clicked) = elapsed2.read().ok() {
-            let d = now.duration_since(clicked.unwrap());
+            let d = now.duration_since(clicked.unwrap_or(now));
             data.push(d.as_micros());
             let recipe = recipe_weak2.upgrade().unwrap();
             recipe.set_label_text(SharedString::from(format!("{} us", d.as_micros())));
