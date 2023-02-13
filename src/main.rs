@@ -6,16 +6,16 @@ slint::slint! {
         callback start-pressed <=> start_button.clicked;
         callback stop-pressed <=> stop_button.clicked;
         callback slider-changed <=> slider.changed;
-        in-out property <float> slider-value: slider.value ;
+        in-out property <float> slider-value <=> slider.value ;
         out property <float> slider-min: slider.minimum ;
         out property <float> slider-max: slider.maximum ;
         out property <float> slider-tick: 1 ;
-        in property <string> label-text: text.text;
+        in property <string> label-text <=> text.text;
         in-out property <bool> btn-enabled: true;
 
         VerticalLayout {
             width: 50%;
-            spacing: 5px;
+            spacing: 40px;
             Text {
                 text: "Rusty Slider Test";
                 horizontal-alignment: center;
@@ -84,17 +84,19 @@ fn main() {
                     let mut value = recipe.get_slider_value();
                     let max = recipe.get_slider_max();
                     let min = recipe.get_slider_min();
-                    if value == max {
+                    let t = value + recipe.get_slider_tick();
+                    if t >= max {
                         value = min
                     } else {
-                        value += recipe.get_slider_tick();
+                        value = t;
                     }
+                    recipe.set_label_text(SharedString::from(format!("val {}",value)));
                     let elapsed1 = elapsed1.clone();
                     if let Some(mut elapsed) = elapsed1.write().ok() {
                         *elapsed = Some(Instant::now());
                     }
                     recipe.set_slider_value(value);
-                    println!("slider set to {}",value);
+                    // println!("slider set to {}",value);
                 });
                 // println!("timer called");
             },
@@ -113,18 +115,22 @@ fn main() {
     });
 
     let recipe_weak2 = recipe.as_weak();
-    let elapsed2 = elapsed.clone();
-    let mut data = vec![];
-    recipe.on_slider_changed(move |_| {
-        let now = Instant::now();
+    // let elapsed2 = elapsed.clone();
+    // let mut data = vec![];
+    // recipe.on_slider_changed(move |_| {
+    //     let now = Instant::now();
 
-        if let Some(clicked) = elapsed2.read().ok() {
-            let d = now.duration_since(clicked.unwrap_or(now));
-            data.push(d.as_micros());
-            let recipe = recipe_weak2.upgrade().unwrap();
-            recipe.set_label_text(SharedString::from(format!("{} us", d.as_micros())));
-        }
-        println!("slider updated. data len {}",data.len());
+    //     if let Some(clicked) = elapsed2.read().ok() {
+    //         let d = now.duration_since(clicked.unwrap_or(now));
+    //         data.push(d.as_micros());
+    //         let recipe = recipe_weak2.upgrade().unwrap();
+    //         recipe.set_label_text(SharedString::from(format!("{} us", d.as_micros())));
+    //     }
+    //     println!("slider updated. data len {}",data.len());
+    // });
+    recipe.on_slider_changed(move |value| {
+        let recipe = recipe_weak2.upgrade().unwrap();
+        recipe.set_label_text(SharedString::from(format!("val {}",value)));
     });
 
     recipe.show();
