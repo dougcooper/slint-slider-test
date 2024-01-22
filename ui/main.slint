@@ -1,12 +1,12 @@
-import { Slider , Button, GroupBox, HorizontalBox} from "std-widgets.slint";
+import { Slider , Button, GroupBox, HorizontalBox, VerticalBox} from "std-widgets.slint";
 
 export component Sliders inherits Window {
     out property <int> min: 0;
     out property <int> max: 10;
     in property <[float]> slider-values: [0,0,0,0,0,0,0,0];
     VerticalLayout{
-        for value[index] in slider-values: sliders := HorizontalBox {
-            HorizontalLayout {
+        for value[index] in slider-values: sliders := VerticalBox {
+            HorizontalBox {
                 spacing: 10px;
                 Text {
                     text: index;
@@ -19,9 +19,10 @@ export component Sliders inherits Window {
                     enabled: true;
                     changed => {text.text = self.value }
                 }
-                text:=Text {
-                    text: Math.floor(value);
-                }
+            }
+            text:=Text {
+                horizontal-alignment: center;
+                text: Math.floor(value);
             }
         }
     }
@@ -35,7 +36,7 @@ export component SliderTest inherits Window {
     out property <float> slider-tick: 1 ;
     in-out property <bool> btn-enabled: true;
 
-    VerticalLayout {
+    VerticalBox {
         spacing: 40px;
         padding: 50px;
         Text {
@@ -43,22 +44,23 @@ export component SliderTest inherits Window {
             horizontal-alignment: center;
             vertical-alignment: center;
             font-size: 30px;
+            height: 40px;
         }
-        HorizontalLayout {
-            spacing: 5px;
+        HorizontalBox {
+            spacing: 10px;
             start_button := Button {
-                height: 25px;
+                height: 50px;
                 text: "Start";
                 enabled: btn-enabled;
                 clicked => { btn-enabled = !btn-enabled }
             }
             stop_button := Button {
-                height: 25px;
+                height: 50px;
                 text: "Stop";
                 enabled: !btn-enabled;
                 clicked => { btn-enabled = !btn-enabled }
             }
-            }
+        }
         sliders := Sliders {}
     }
 }
