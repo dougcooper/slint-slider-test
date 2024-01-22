@@ -1,0 +1,64 @@
+import { Slider , Button, GroupBox, HorizontalBox} from "std-widgets.slint";
+
+export component Sliders inherits Window {
+    out property <int> min: 0;
+    out property <int> max: 10;
+    in property <[float]> slider-values: [0,0,0,0,0,0,0,0];
+    VerticalLayout{
+        for value[index] in slider-values: sliders := HorizontalBox {
+            HorizontalLayout {
+                spacing: 10px;
+                Text {
+                    text: index;
+                }
+                slider:=Slider {
+                    height: 25px;
+                    value: value;
+                    minimum: root.min;
+                    maximum: root.max;
+                    enabled: true;
+                    changed => {text.text = self.value }
+                }
+                text:=Text {
+                    text: Math.floor(value);
+                }
+            }
+        }
+    }
+}
+export component SliderTest inherits Window {
+    callback start-pressed <=> start_button.clicked;
+    callback stop-pressed <=> stop_button.clicked;
+    in-out property <[float]> slider-values <=> sliders.slider-values ;
+    out property <float> slider-min: sliders.min ;
+    out property <float> slider-max: sliders.max ;
+    out property <float> slider-tick: 1 ;
+    in-out property <bool> btn-enabled: true;
+
+    VerticalLayout {
+        spacing: 40px;
+        padding: 50px;
+        Text {
+            text: "Rusty Slider Test";
+            horizontal-alignment: center;
+            vertical-alignment: center;
+            font-size: 30px;
+        }
+        HorizontalLayout {
+            spacing: 5px;
+            start_button := Button {
+                height: 25px;
+                text: "Start";
+                enabled: btn-enabled;
+                clicked => { btn-enabled = !btn-enabled }
+            }
+            stop_button := Button {
+                height: 25px;
+                text: "Stop";
+                enabled: !btn-enabled;
+                clicked => { btn-enabled = !btn-enabled }
+            }
+            }
+        sliders := Sliders {}
+    }
+}
