@@ -8,8 +8,13 @@ edition = "2021"
 [dependencies]
 chrono = "0.4.23"
 rand = "0.8.5"
-slint = "1.0.2"
+
+[target.'cfg(windows)'.dependencies]
+slint = "1.3.2"
+
+[target.'cfg(unix)'.dependencies]
+slint = {version = "1.3.2",features = ["renderer-skia","renderer-skia-opengl"]}
 
 [build-dependencies]
-slint = "1.0.2"
+slint = "1.3.2"
 slint-build = "1.3.2"

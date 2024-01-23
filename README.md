@@ -1,6 +1,7 @@
 # slint-slider-test
 
-current issues:
+## cross compile
 
-1. setting the slider value from rust does not invoke slider change callback
-2. the ui does not update when the slider value is set
+`cargo install cross`
+
+`cross build --release --target=aarch64-unknown-linux-gnu`
